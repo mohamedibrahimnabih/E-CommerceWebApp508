@@ -1,0 +1,28 @@
+﻿<div class="row">
+    <div class="col-9 mb-3">
+        <h2>All Categories</h2>
+    </div>
+    <div class="col-3">
+        <a href="/Category/Create" type="button" class="btn btn-danger"><i class="bi bi-plus-circle"></i> Create New Category</a>
+    </div>
+</div>
+
+<div class="row">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Category Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="table-light">
+                    <th scope="row">@item.Id</th>
+                    <td>@item.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
