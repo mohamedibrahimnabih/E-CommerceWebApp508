@@ -1,0 +1,62 @@
+﻿@model List<Category>
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <h2><a href="/Product/Index"><i class="bi bi-arrow-left"></i></a> Create New Product</h2>
+    </div>
+</div>
+
+<div class="row">
+    <form action="/Product/Create" enctype="multipart/form-data" method="post">
+        <div class="mb-3">
+            <label for="ProductName" class="form-label">Product Name</label>
+            <input type="text" class="form-control" id="ProductName" name="Name">
+        </div>
+        <div class="mb-3">
+            <label for="ProductDescription" class="form-label">Product Description</label>
+            <input type="text" class="form-control" id="ProductDescription" name="Description">
+        </div>
+        <div class="mb-3">
+            <label for="ProductPrice" class="form-label">Product Price</label>
+            <input type="number" class="form-control" id="ProductPrice" name="Price">
+        </div>
+        <div class="mb-3">
+            <label for="ProductImgUrl" class="form-label">Product ImgUrl</label>
+            <input type="file" class="form-control" id="ProductImgUrl" name="ImgUrl" accept="image/*">
+            <!-- Image preview -->
+            <img id="imagePreview" style="display:none; margin-top: 10px; max-width: 300px;" />
+        </div>
+        <div class="mb-3">
+            <label for="ProductCategoryId" class="form-label">Product CategoryId</label>
+@*             <input type="number" class="form-control" id="ProductCategoryId" name="CategoryId">
+ *@        
+
+            <select name="CategoryId" class="form-select">
+                @foreach(var item in Model)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('ProductImgUrl').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
+        }
+    });
+</script>
