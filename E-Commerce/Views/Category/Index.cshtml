@@ -3,7 +3,9 @@
         <h2>All Categories</h2>
     </div>
     <div class="col-3">
-        <a href="/Category/Create" type="button" class="btn btn-danger"><i class="bi bi-plus-circle"></i> Create New Category</a>
+        <a href="/Category/Create" type="button" class="btn btn-danger">
+            <i class="bi bi-plus-circle"></i> Create New Category
+        </a>
     </div>
 </div>
 
@@ -13,6 +15,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Category Name</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,8 +24,55 @@
                 <tr class="table-light">
                     <th scope="row">@item.Id</th>
                     <td>@item.Name</td>
+                    <td>
+                        <a href="/Category/Edit?categoryId=@item.Id" type="button" class="btn btn-dark">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <!-- Delete Button that triggers modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal" data-categoryid="@item.Id" data-categoryname="@item.Name">
+                            <i class="bi bi-trash3"></i> Delete
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the category <strong id="categoryName"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <!-- This button will trigger the delete action -->
+                <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to handle the modal and set the category ID for deletion
+    var deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var categoryId = button.getAttribute('data-categoryid'); // Extract info from data-* attributes
+        var categoryName = button.getAttribute('data-categoryname');
+
+        var modalBodyName = deleteModal.querySelector('#categoryName');
+        var confirmDeleteBtn = deleteModal.querySelector('#confirmDeleteBtn');
+
+        // Update the modal content
+        modalBodyName.textContent = categoryName;
+        // Set the delete link to the actual delete action URL
+        confirmDeleteBtn.href = "/Category/Delete?categoryId=" + categoryId;
+    });
+</script>
