@@ -11,6 +11,9 @@ namespace E_Commerce.Controllers
         {
             var categories = dbContext.Categories.ToList();
 
+            //ViewBag.success = TempData["success"];
+            //ViewBag.success = Request.Cookies["success"];
+
             return View(model: categories);
         }
 
@@ -25,6 +28,13 @@ namespace E_Commerce.Controllers
             //Category category = new Category() { Name = categoryName };
             dbContext.Categories.Add(category);
             dbContext.SaveChanges();
+
+            CookieOptions options = new CookieOptions();
+            options.Secure = true;
+            options.Expires = DateTimeOffset.Now.AddHours(14);
+
+            //TempData["success"] = "Add category successfully";
+            Response.Cookies.Append("success", "Add category successfully", options);
 
             return RedirectToAction(nameof(Index));
         }

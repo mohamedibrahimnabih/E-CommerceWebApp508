@@ -1,4 +1,18 @@
-﻿<div class="row">
+﻿@section Scripts {
+     @* @if(TempData["success"] != null)
+     {
+         <script>
+             toastr.success('@TempData["success"]')
+         </script>
+     } *@
+
+        <script>
+        toastr.success('@Context.Request.Cookies["success"]')
+        </script>
+}
+
+
+<div class="row">
     <div class="col-9 mb-3">
         <h2>All Categories</h2>
     </div>

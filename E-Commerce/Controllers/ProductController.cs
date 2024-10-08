@@ -28,7 +28,7 @@ namespace E_Commerce.Controllers
         {
             if (ImgUrl.Length > 0)
             {
-                var fileName = ImgUrl.FileName; // "1.jpg"
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // ".jpg"
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
 
                 using (var stream = System.IO.File.Create(filePath))
@@ -36,7 +36,7 @@ namespace E_Commerce.Controllers
                     ImgUrl.CopyTo(stream);
                 }
 
-                product.ImgUrl = ImgUrl.FileName;
+                product.ImgUrl = fileName;
             }
 
             dbContext.Products.Add(product);
@@ -63,22 +63,28 @@ namespace E_Commerce.Controllers
         [HttpPost]
         public IActionResult Edit(Product product, IFormFile ImgUrl) // "1.jpg"
         {
-            if (ImgUrl.Length > 0)
+            var oldProduct = dbContext.Products.AsNoTracking().FirstOrDefault(e=>e.Id == product.Id);
+            if (ImgUrl != null && ImgUrl.Length > 0)
             {
-                var fileName = ImgUrl.FileName; // "1.jpg"
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // ".jpg"
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", oldProduct.ImgUrl);
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
                     ImgUrl.CopyTo(stream);
                 }
 
-                //if (System.IO.File.Exists(filePath))
-                //{
-                //    System.IO.File.Delete(filePath);
-                //}
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
 
-                product.ImgUrl = ImgUrl.FileName;
+                product.ImgUrl = fileName;
+            }
+            else
+            {
+                product.ImgUrl = oldProduct.ImgUrl;
             }
 
             dbContext.Products.Update(product);
@@ -89,6 +95,14 @@ namespace E_Commerce.Controllers
 
         public IActionResult Delete(int productId)
         {
+            var oldProduct = dbContext.Products.AsNoTracking().FirstOrDefault(e => e.Id == productId);
+            var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", oldProduct.ImgUrl);
+
+            if (System.IO.File.Exists(oldFilePath))
+            {
+                System.IO.File.Delete(oldFilePath);
+            }
+
             Product product = new Product() { Id = productId };
             dbContext.Products.Remove(product);
             dbContext.SaveChanges();

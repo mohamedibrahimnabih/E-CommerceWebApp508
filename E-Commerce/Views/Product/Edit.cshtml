@@ -8,6 +8,8 @@
 
 <div class="row">
     <form action="/Product/Edit" enctype="multipart/form-data" method="post">
+        <input type="hidden" class="form-control" name="Id" value="@Model.Id">
+
         <div class="mb-3">
             <label for="ProductName" class="form-label">Product Name</label>
             <input type="text" class="form-control" id="ProductName" name="Name" value="@Model.Name">
