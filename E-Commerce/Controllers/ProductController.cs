@@ -19,30 +19,43 @@ namespace E_Commerce.Controllers
         public IActionResult Create()
         {
             var categories = dbContext.Categories.ToList();
+            ViewData["categories"] = categories;
 
-            return View(categories);
+            Product product = new Product();
+            return View(product);
         }
 
         [HttpPost]
         public IActionResult Create(Product product, IFormFile ImgUrl) // "1.jpg"
         {
-            if (ImgUrl.Length > 0)
+            //product.ImgUrl = ImgUrl.FileName;
+            //ModelState.Remove("ImgUrl");
+            if (ModelState.IsValid)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // ".jpg"
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
-
-                using (var stream = System.IO.File.Create(filePath))
+                if (ImgUrl.Length > 0)
                 {
-                    ImgUrl.CopyTo(stream);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImgUrl.FileName); // ".jpg"
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        ImgUrl.CopyTo(stream);
+                    }
+
+                    product.ImgUrl = fileName;
                 }
 
-                product.ImgUrl = fileName;
+                dbContext.Products.Add(product);
+                dbContext.SaveChanges();
+
+                TempData["success"] = "Add category successfully";
+
+                return RedirectToAction(nameof(Index));
             }
 
-            dbContext.Products.Add(product);
-            dbContext.SaveChanges();
-
-            return RedirectToAction(nameof(Index));
+            var categories = dbContext.Categories.ToList();
+            ViewData["categories"] = categories;
+            return View(product);
         }
 
         public IActionResult Edit(int productId)
@@ -90,6 +103,9 @@ namespace E_Commerce.Controllers
             dbContext.Products.Update(product);
             dbContext.SaveChanges();
 
+            TempData["success"] = "Update category successfully";
+
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -106,6 +122,9 @@ namespace E_Commerce.Controllers
             Product product = new Product() { Id = productId };
             dbContext.Products.Remove(product);
             dbContext.SaveChanges();
+
+            TempData["success"] = "Delete product successfully";
+
 
             return RedirectToAction(nameof(Index));
         }

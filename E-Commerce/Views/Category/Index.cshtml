@@ -1,14 +1,10 @@
 ﻿@section Scripts {
-     @* @if(TempData["success"] != null)
-     {
-         <script>
-             toastr.success('@TempData["success"]')
-         </script>
-     } *@
+    <partial name="_NotficationPartial.cshtml"></partial>
 
-        <script>
-        toastr.success('@Context.Request.Cookies["success"]')
-        </script>
+
+         @* <script>
+         toastr.success('@Context.Request.Cookies["success"]')
+         </script> *@
 }
 
 
