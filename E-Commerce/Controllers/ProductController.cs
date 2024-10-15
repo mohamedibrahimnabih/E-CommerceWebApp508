@@ -2,6 +2,7 @@
 using E_Commerce.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Controllers
@@ -18,8 +19,8 @@ namespace E_Commerce.Controllers
 
         public IActionResult Create()
         {
-            var categories = dbContext.Categories.ToList();
-            ViewData["categories"] = categories;
+            var categories = dbContext.Categories.ToList().Select(e=> new SelectListItem { Text = e.Name, Value = e.Id.ToString() });
+            ViewBag.categories = categories;
 
             Product product = new Product();
             return View(product);

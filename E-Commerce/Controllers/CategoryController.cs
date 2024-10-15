@@ -1,6 +1,7 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Controllers
 {
@@ -9,7 +10,7 @@ namespace E_Commerce.Controllers
         ApplicationDbContext dbContext = new ApplicationDbContext(); 
         public IActionResult Index()
         {
-            var categories = dbContext.Categories.ToList();
+            var categories = dbContext.Categories.Include(e=>e.Products).ToList();
 
             //ViewBag.success = TempData["success"];
             //ViewBag.success = Request.Cookies["success"];
