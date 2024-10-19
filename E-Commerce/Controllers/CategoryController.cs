@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Models;
+using E_Commerce.Repository;
+using E_Commerce.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,10 +9,21 @@ namespace E_Commerce.Controllers
 {
     public class CategoryController : Controller
     {
-        ApplicationDbContext dbContext = new ApplicationDbContext(); 
+        private readonly ICategoryRepository categoryRepository;
+
+        //ApplicationDbContext dbContext = new ApplicationDbContext(); 
+
+        //CategoryRepository categoryRepository = new CategoryRepository();
+
+        public CategoryController(ICategoryRepository categoryRepository)
+        {
+            this.categoryRepository = categoryRepository;
+        }
+
         public IActionResult Index()
         {
-            var categories = dbContext.Categories.Include(e=>e.Products).ToList();
+            //var categories = dbContext.Categories.Include(e=>e.Products).ToList();
+            var categories = categoryRepository.GetAll("Products");
 
             //ViewBag.success = TempData["success"];
             //ViewBag.success = Request.Cookies["success"];
@@ -30,8 +43,10 @@ namespace E_Commerce.Controllers
             if(ModelState.IsValid)
             {
                 //Category category = new Category() { Name = categoryName };
-                dbContext.Categories.Add(category);
-                dbContext.SaveChanges();
+                //dbContext.Categories.Add(category);
+                //dbContext.SaveChanges();
+                categoryRepository.Create(category);
+                categoryRepository.Commit();
 
                 //CookieOptions options = new CookieOptions();
                 //options.Secure = true;
@@ -49,7 +64,8 @@ namespace E_Commerce.Controllers
 
         public IActionResult Edit(int categoryId)
         {
-            var category = dbContext.Categories.Find(categoryId);
+            //var category = dbContext.Categories.Find(categoryId);
+            var category = categoryRepository.GetById(categoryId);
             if(category != null)
                 return View(category);
 
@@ -62,8 +78,8 @@ namespace E_Commerce.Controllers
             if(ModelState.IsValid)
             {
                 //Category category = new Category() { Name = categoryName };
-                dbContext.Categories.Update(category);
-                dbContext.SaveChanges();
+                categoryRepository.Edit(category);
+                categoryRepository.Commit();
 
                 TempData["success"] = "Update category successfully";
 
@@ -76,8 +92,8 @@ namespace E_Commerce.Controllers
         public IActionResult Delete(int categoryId)
         {
             Category category = new Category() { Id = categoryId };
-            dbContext.Categories.Remove(category);
-            dbContext.SaveChanges();
+            categoryRepository.Delete(category);
+            categoryRepository.Commit();
 
             TempData["success"] = "Delete category successfully";
 
