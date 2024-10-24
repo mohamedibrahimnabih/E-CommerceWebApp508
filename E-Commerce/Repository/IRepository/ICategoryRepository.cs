@@ -3,18 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Repository.IRepository
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository<Category>
     {
-        List<Category> GetAll(string? include = null);
-
-        Category GetById(int categoryId);
-
-        void Create(Category category);
-
-        void Edit(Category category);
-
-        void Delete(Category category);
-
-        void Commit();
+        // add additional logic
     }
 }

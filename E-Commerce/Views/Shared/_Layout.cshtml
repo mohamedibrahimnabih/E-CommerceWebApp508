@@ -24,16 +24,24 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Management System</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="/Category/Index">Category</a>
-                                <a class="dropdown-item" href="/Product/Index">Product</a>
-                                <a class="dropdown-item" href="/Company/Index">Company</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
-                        </li>
+                        
+                        @if(User.IsInRole(SD.adminRole) || User.IsInRole(SD.CompanyRole))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Management System</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/Category/Index">Category</a>
+                                    <a class="dropdown-item" href="/Product/Index">Product</a>
+                                    @if(User.IsInRole(SD.adminRole)) 
+                                    {
+                                        <a class="dropdown-item" href="/Company/Index">Company</a>
+                                    }
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Separated link</a>
+                                </div>
+                            </li>
+                        }
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Models;
+using E_Commerce.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Controllers
 {
+    [Authorize(Roles = $"{SD.adminRole},{SD.CompanyRole}")]
     public class ProductController : Controller
     {
         ApplicationDbContext dbContext = new ApplicationDbContext();

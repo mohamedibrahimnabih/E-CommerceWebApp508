@@ -1,7 +1,10 @@
 ﻿using E_Commerce.Models;
+using E_Commerce.Utility;
 using E_Commerce.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace E_Commerce.Controllers
 {
@@ -9,16 +12,25 @@ namespace E_Commerce.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
         // Register
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
+            if(roleManager.Roles.IsNullOrEmpty())
+            {
+                await roleManager.CreateAsync(new(SD.adminRole));
+                await roleManager.CreateAsync(new(SD.CompanyRole));
+                await roleManager.CreateAsync(new(SD.CustomerRole));
+            }
+
             return View();
         }
 
@@ -39,6 +51,9 @@ namespace E_Commerce.Controllers
 
                 if(result.Succeeded)
                 {
+                    // add user with role => customer, compa
+                    await userManager.AddToRoleAsync(applicationUser, SD.CustomerRole);
+                    await signInManager.SignInAsync(applicationUser, false);
                     return RedirectToAction("Index", "Home");
                 }
 

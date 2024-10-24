@@ -1,10 +1,13 @@
 ﻿using E_Commerce.Data;
 using E_Commerce.Models;
+using E_Commerce.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Controllers
 {
+    [Authorize(Roles = $"{SD.adminRole}")]
     public class CompanyController : Controller
     {
         ApplicationDbContext dbContext = new ApplicationDbContext();

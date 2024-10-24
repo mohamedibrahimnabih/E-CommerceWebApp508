@@ -2,11 +2,14 @@
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using E_Commerce.Repository.IRepository;
+using E_Commerce.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Controllers
 {
+    [Authorize(Roles = $"{SD.adminRole},{SD.CompanyRole}")]
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository categoryRepository;
@@ -20,6 +23,7 @@ namespace E_Commerce.Controllers
             this.categoryRepository = categoryRepository;
         }
 
+        //[AllowAnonymous]
         public IActionResult Index()
         {
             //var categories = dbContext.Categories.Include(e=>e.Products).ToList();
@@ -64,8 +68,9 @@ namespace E_Commerce.Controllers
 
         public IActionResult Edit(int categoryId)
         {
+            //var categories = dbContext.Categories.Where(e=>e.Name == name).ToList();
             //var category = dbContext.Categories.Find(categoryId);
-            var category = categoryRepository.GetById(categoryId);
+            var category = categoryRepository.GetOne(e=>e.Id==categoryId);
             if(category != null)
                 return View(category);
 
