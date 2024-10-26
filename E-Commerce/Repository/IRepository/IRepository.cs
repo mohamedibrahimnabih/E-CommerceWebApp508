@@ -5,7 +5,7 @@ namespace E_Commerce.Repository.IRepository
 {
     public interface IRepository<T> where T : class
     {
-        List<T> GetAll(string? include = null);
+        IQueryable<T> GetAll(string? include = null);
 
         T? GetOne(Expression<Func<T, bool>> expression);
 

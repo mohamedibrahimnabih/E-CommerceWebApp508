@@ -20,12 +20,12 @@ namespace E_Commerce.Repository
         }
 
         // CRUD
-        public List<T> GetAll(string? include = null)
+        public IQueryable<T> GetAll(string? include = null)
         {
             if (include == null)
-                return dbSet.ToList();
+                return dbSet;
             else
-                return dbSet.Include(include).ToList();
+                return dbSet.Include(include);
         }
 
         public T? GetOne(Expression<Func<T, bool>> expression)

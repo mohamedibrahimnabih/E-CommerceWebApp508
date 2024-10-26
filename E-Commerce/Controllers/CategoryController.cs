@@ -24,15 +24,37 @@ namespace E_Commerce.Controllers
         }
 
         //[AllowAnonymous]
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    //var categories = dbContext.Categories.Include(e=>e.Products).ToList();
+        //    var categories = categoryRepository.GetAll("Products");
+
+        //    //ViewBag.success = TempData["success"];
+        //    //ViewBag.success = Request.Cookies["success"];
+
+        //    return View(model: categories);
+        //}
+
+        public IActionResult Index(int page = 1, string? search = null) // 1, 2, 3
         {
-            //var categories = dbContext.Categories.Include(e=>e.Products).ToList();
-            var categories = categoryRepository.GetAll("Products");
+            if (page < 1)
+                page = 1;
 
-            //ViewBag.success = TempData["success"];
-            //ViewBag.success = Request.Cookies["success"];
+            IQueryable<Category> categories = categoryRepository.GetAll("Products");
 
-            return View(model: categories);
+            if (search != null)
+            {
+                categories = categories.Where(e => e.Name.Contains(search));
+            }
+
+            categories = categories.Skip((page - 1) * 5).Take(5);
+
+            if (categories.Any())
+            {
+                return View(categories.ToList());
+            }
+
+            return RedirectToAction("NotFoundPage", "Home");
         }
 
         public IActionResult Create()

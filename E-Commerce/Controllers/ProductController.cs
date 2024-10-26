@@ -14,10 +14,26 @@ namespace E_Commerce.Controllers
     {
         ApplicationDbContext dbContext = new ApplicationDbContext();
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string? search = null) // 1, 2, 3
         {
-            var products = dbContext.Products.Include(e=>e.Category).ToList();
-            return View(products);
+            if (page < 1)
+                page = 1;
+
+            IQueryable<Product> products = dbContext.Products.Include(e => e.Category);
+            
+            if(search != null)
+            {
+                products = products.Where(e => e.Name.Contains(search) || e.Description.Contains(search));
+            }
+
+            products = products.Skip((page - 1) * 5).Take(5);
+
+            if (products.Any())
+            {
+                return View(products.ToList());
+            }
+
+            return RedirectToAction("NotFoundPage", "Home");
         }
 
         public IActionResult Create()

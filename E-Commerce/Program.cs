@@ -2,8 +2,10 @@ using E_Commerce.Data;
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using E_Commerce.Repository.IRepository;
+using E_Commerce.Utility;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace E_Commerce
 {
@@ -23,6 +25,9 @@ namespace E_Commerce
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
             var app = builder.Build();
 
